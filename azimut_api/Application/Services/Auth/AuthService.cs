@@ -66,18 +66,19 @@ namespace Azimut.Infrastructure.Services.Auth
                 {
                     var token = jwtService.GenerateToken(userDTO.Id.ToString(), userDTO.Email);
                     return new AuthDTO
-                        { Token = token, UserId = userEntity.Id.ToString(), LoginResult = LoginResult.Success};
+                        { Token = token, UserId = userEntity.Id.ToString(), LoginResult = LoginResult.Success };
                 }
 
                 return new AuthDTO { LoginResult = LoginResult.InvalidPassword };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Logger.Error($"{loginReq.Email}: Что-то упало...",ex);
+                Logger.Error($"{loginReq.Email}: Что-то упало...", ex);
                 return new AuthDTO { LoginResult = LoginResult.Unknown };
             }
         }
     }
+
     public class AuthDTO
     {
         public String? UserId { get; set; }
@@ -91,7 +92,7 @@ namespace Azimut.Infrastructure.Services.Auth
         Success = 2,
         AlreadyExists = 3,
     }
-    
+
     public enum LoginResult
     {
         Unknown,
@@ -100,5 +101,3 @@ namespace Azimut.Infrastructure.Services.Auth
         InvalidPassword,
     }
 }
-
-
