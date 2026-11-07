@@ -5,3 +5,5 @@ bin/*
 obj/*
 .idea/*
 Properties/*
+.local/
+/Infrastructure/MigrationHelper/Migrations/

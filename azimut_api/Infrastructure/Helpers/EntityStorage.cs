@@ -19,7 +19,7 @@ public class EntityStorage(ApplicationContext context) : IScopedDependency
         }
     }
 
-    public async Task<int> CreateAsync<T>(T entity) where T : class, IEntity
+    public async Task<Guid> CreateAsync<T>(T entity) where T : class, IEntity
     {
         try
         {
@@ -83,4 +83,5 @@ public class EntityStorage(ApplicationContext context) : IScopedDependency
 
     private Task Commit() => context.SaveChangesAsync();
 }
+
 

@@ -1,19 +1,31 @@
-import 'package:web/web.dart' as web;
+import 'dart:convert';
+
+import 'token_storage.dart'
+    if (dart.library.js_interop) 'token_storage_web.dart'
+    as storage;
 
 class CookieHelpers {
-  static void SetToken(String token) {
-    web.window.sessionStorage.setItem('token', token);
-  }
+  static void SetToken(String token, {bool persistent = false}) =>
+      storage.writeToken(token, persistent: persistent);
 
-  static String GetToken() =>
-      web.window.sessionStorage.getItem('token') ?? "null";
+  static String GetToken() => storage.readToken() ?? 'null';
 
   static bool HasToken() {
-    final token = GetToken().trim();
-    return token.isNotEmpty && token != 'null';
+    final parts = GetToken().split('.');
+    if (parts.length != 3) return false;
+    try {
+      final payload = jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+      );
+      if (payload case {'exp': final num expiry}) {
+        if (expiry * 1000 > DateTime.now().millisecondsSinceEpoch) return true;
+      }
+    } on FormatException {
+      // Discard malformed tokens saved in browser storage.
+    }
+    RemoveToken();
+    return false;
   }
 
-  static void RemoveToken() => web.window.sessionStorage.removeItem('token');
+  static void RemoveToken() => storage.clearToken();
 }
-
-

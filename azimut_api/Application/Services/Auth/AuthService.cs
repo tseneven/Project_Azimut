@@ -24,6 +24,7 @@ namespace Azimut.Infrastructure.Services.Auth
                     User userDTO = new User()
                     {
                         Email = registerDTO.Email,
+                        FirstName = registerDTO.FirstName?.Trim(),
                         Salt = saltString,
                         HashPassword = hashPasswordString,
                     };
@@ -55,7 +56,6 @@ namespace Azimut.Infrastructure.Services.Auth
                     Id = userEntity.Id,
                     Email = userEntity.Email,
                     PasswordHash = userEntity.HashPassword,
-                    Salt = userEntity.Salt,
                 };
 
                 var saltBytes = Convert.FromBase64String(userEntity.Salt);
