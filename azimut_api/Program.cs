@@ -25,9 +25,17 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>()
-                ?? ["http://localhost:8080"])
+                ?? ["http://localhost:5237"])
               .AllowAnyHeader()
               .AllowAnyMethod();
+
+        if (builder.Environment.IsDevelopment())
+        {
+                var isConfiguredOriginAllowed = policy.Build().IsOriginAllowed;
+            policy.SetIsOriginAllowed(origin => isConfiguredOriginAllowed(origin) ||
+                (Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
+                 uri.Scheme is "http" or "https" && uri.IsLoopback));
+        }
     });
 });
 
